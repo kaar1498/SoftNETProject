@@ -14,17 +14,10 @@ namespace SoftNETProject.Data
         {
         }
 
-        public DbSet<SoftNETProject.Data.Product> Product { get; set; }
+        public DbSet<Product> Product { get; set; }
 
-        public DbSet<SoftNETProject.Data.Supplier> Supplier { get; set; }
+        public DbSet<Supplier> Supplier { get; set; }
 
-        public DbSet<SoftNETProject.Data.Category> Category { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Product>().ToTable("Product");
-            modelBuilder.Entity<Supplier>().ToTable("Supplier");
-            modelBuilder.Entity<Category>().ToTable("Category");
-        }
+        public DbSet<Category> Category { get; set; }
     }
 }

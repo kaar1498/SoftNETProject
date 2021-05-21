@@ -28,7 +28,7 @@ namespace SoftNETProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddScoped<IExceptionLogger, ExceptionLogger>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -36,7 +36,10 @@ namespace SoftNETProject
             });
 
             services.AddDbContext<SoftNETProjectContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("SoftNETProjectContext")));
+            {
+                options.UseSqlite(Configuration.GetConnectionString("SoftNETProjectContext"));
+                options.EnableSensitiveDataLogging();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,15 +53,9 @@ namespace SoftNETProject
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

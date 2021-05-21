@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SoftNETProject.Controllers;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace SoftNETProject.Data
 {
-    public class Category
+    public class Category : IModel
     {
         [Key]
         public int Id { get; set; }

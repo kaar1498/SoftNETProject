@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using SoftNETProject.Controllers;
 using System.Linq;
 using System.Threading.Tasks;
 
 
 namespace SoftNETProject.Data
 {
-    public class Product
+    public class Product : IModel
     {
         [Key]
         public int Id { get; set; }

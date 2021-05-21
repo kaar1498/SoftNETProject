@@ -20,14 +20,26 @@ namespace SoftNETProject.Controllers
             _context = context;
         }
 
-        // GET: api/Suppliers
+        private bool SupplierCheck(int id)
+        {
+            return _context.Supplier.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Supplier>> PostSupplier(Supplier supplier)
+        {
+            _context.Supplier.Add(supplier);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetSupplier", new { id = supplier.Id }, supplier);
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Supplier>>> GetSupplier()
         {
             return await _context.Supplier.ToListAsync();
         }
 
-        // GET: api/Suppliers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Supplier>> GetSupplier(int id)
         {
@@ -41,8 +53,6 @@ namespace SoftNETProject.Controllers
             return supplier;
         }
 
-        // PUT: api/Suppliers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSupplier(int id, Supplier supplier)
         {
@@ -59,7 +69,7 @@ namespace SoftNETProject.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SupplierExists(id))
+                if (!SupplierCheck(id))
                 {
                     return NotFound();
                 }
@@ -72,18 +82,6 @@ namespace SoftNETProject.Controllers
             return NoContent();
         }
 
-        // POST: api/Suppliers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Supplier>> PostSupplier(Supplier supplier)
-        {
-            _context.Supplier.Add(supplier);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSupplier", new { id = supplier.Id }, supplier);
-        }
-
-        // DELETE: api/Suppliers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSupplier(int id)
         {
@@ -97,11 +95,6 @@ namespace SoftNETProject.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool SupplierExists(int id)
-        {
-            return _context.Supplier.Any(e => e.Id == id);
         }
     }
 }

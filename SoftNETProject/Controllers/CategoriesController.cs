@@ -14,20 +14,24 @@ namespace SoftNETProject.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly SoftNETProjectContext _context;
+        //private readonly IExceptionLogger _exceptionLogger;
 
         public CategoriesController(SoftNETProjectContext context)
         {
             _context = context;
         }
 
-        // GET: api/Categories
+        private bool CategoryCheck(int? id)
+        {
+            return _context.Category.Any(e => e.Id == id);
+        }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
             return await _context.Category.ToListAsync();
         }
 
-        // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
@@ -41,8 +45,6 @@ namespace SoftNETProject.Controllers
             return category;
         }
 
-        // PUT: api/Categories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
@@ -59,12 +61,13 @@ namespace SoftNETProject.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CategoryExists(id))
+                if (!CategoryCheck(id))
                 {
                     return NotFound();
                 }
                 else
                 {
+                    //_exceptionLogger
                     throw;
                 }
             }
@@ -72,8 +75,6 @@ namespace SoftNETProject.Controllers
             return NoContent();
         }
 
-        // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
@@ -83,7 +84,6 @@ namespace SoftNETProject.Controllers
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
 
-        // DELETE: api/Categories/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
@@ -97,11 +97,6 @@ namespace SoftNETProject.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Category.Any(e => e.Id == id);
         }
     }
 }

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using SoftNETProject.Controllers;
 
 namespace SoftNETProject.Data
 {
-    public class Supplier
+    public class Supplier : IModel
     {
         [Key]
         public int Id { get; set; }
