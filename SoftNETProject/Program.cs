@@ -31,11 +31,11 @@ namespace SoftNETProject
                 {
                     var context = services.GetRequiredService<SoftNETProjectContext>();
                     context.Database.EnsureCreated();
-                    DbInitializer.Initialize(context);
+                    DbContext.Initialize(context);
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    ILogger logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred creating the DB.");
                 }
             }

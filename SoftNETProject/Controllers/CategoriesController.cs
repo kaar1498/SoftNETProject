@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SoftNETProject.Data;
 
 namespace SoftNETProject.Controllers
@@ -13,36 +14,60 @@ namespace SoftNETProject.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
+        private readonly ILogger<CategoriesController> _logger;
         private readonly SoftNETProjectContext _context;
-        //private readonly IExceptionLogger _exceptionLogger;
 
-        public CategoriesController(SoftNETProjectContext context)
+        public CategoriesController(SoftNETProjectContext context, ILogger<CategoriesController> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
         private bool CategoryCheck(int? id)
         {
-            return _context.Category.Any(e => e.Id == id);
+            try
+            {
+                return _context.Category.Any(e => e.Id == id);
+            }
+            catch (Exception exception)
+            {
+                    _logger.LogError(exception.Message);
+                    throw;
+            }
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
-            return await _context.Category.ToListAsync();
+            try
+            {
+                return await _context.Category.ToListAsync();
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _context.Category.FindAsync(id);
-
-            if (category == null)
+            try
             {
-                return NotFound();
-            }
+                Category category = await _context.Category.FindAsync(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
 
-            return category;
+                return category;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
 
         [HttpPut("{id}")]
@@ -67,7 +92,7 @@ namespace SoftNETProject.Controllers
                 }
                 else
                 {
-                    //_exceptionLogger
+                    _logger.LogError("PUT Category Failed to save changes");
                     throw;
                 }
             }
@@ -78,25 +103,41 @@ namespace SoftNETProject.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            _context.Category.Add(category);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Category.Add(category);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+                return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _context.Category.FindAsync(id);
-            if (category == null)
+            try
             {
-                return NotFound();
+                var category = await _context.Category.FindAsync(id);
+                if (category == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Category.Remove(category);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Category.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
     }
 }

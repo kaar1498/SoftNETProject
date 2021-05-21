@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SoftNETProject.Data;
+using SoftNETProject.Exceptions;
 
 namespace SoftNETProject
 {
@@ -28,7 +29,6 @@ namespace SoftNETProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IExceptionLogger, ExceptionLogger>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -52,6 +52,7 @@ namespace SoftNETProject
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SoftNETProject v1"));
             }
 
+            app.uselo
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

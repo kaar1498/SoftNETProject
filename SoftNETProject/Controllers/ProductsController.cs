@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SoftNETProject.Data;
 
 namespace SoftNETProject.Controllers
@@ -13,10 +14,12 @@ namespace SoftNETProject.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        private readonly ILogger<ProductsController> _logger;
         private readonly SoftNETProjectContext _context;
 
-        public ProductsController(SoftNETProjectContext context)
+        public ProductsController(SoftNETProjectContext context, ILogger<ProductsController> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -28,29 +31,53 @@ namespace SoftNETProject.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            _context.Product.Add(product);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Product.Add(product);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+                return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
-            return await _context.Product.ToListAsync();
+            try
+            {
+                return await _context.Product.ToListAsync();
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            Product product = await _context.Product.FindAsync(id);
-
-            if (product == null)
+            try
             {
-                return NotFound();
-            }
+                Product product = await _context.Product.FindAsync(id);
 
-            return product;
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return product;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
 
         [HttpPut("{id}")]
@@ -75,6 +102,7 @@ namespace SoftNETProject.Controllers
                 }
                 else
                 {
+                    _logger.LogError("PUT Product Failed to save changes");
                     throw;
                 }
             }
@@ -85,16 +113,25 @@ namespace SoftNETProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Product.FindAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                Product product = await _context.Product.FindAsync(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Product.Remove(product);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Product.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception exception)
+            {
+                _logger.LogError(exception.Message);
+                throw;
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using SoftNETProject.Data;
 
 namespace SoftNETProject.Data
 {
-    public class SoftNETProjectContext : DbContext
+    public class SoftNETProjectContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public SoftNETProjectContext (DbContextOptions<SoftNETProjectContext> options)
             : base(options)

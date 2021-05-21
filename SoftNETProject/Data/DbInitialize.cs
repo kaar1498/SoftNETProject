@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Bogus;
 
 namespace SoftNETProject.Data
 {
-    public class DbInitializer
+    public class DbInitialize
     {
         internal static void Initialize(SoftNETProjectContext context)
         {
