@@ -31,7 +31,7 @@ namespace SoftNETProject
                 {
                     var context = services.GetRequiredService<SoftNETProjectContext>();
                     context.Database.EnsureCreated();
-                    DbContext.Initialize(context);
+                    DbInitialize.Initialize(context);
                 }
                 catch (Exception ex)
                 {

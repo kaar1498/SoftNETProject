@@ -13,7 +13,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SoftNETProject.Data;
-using SoftNETProject.Exceptions;
 
 namespace SoftNETProject
 {
@@ -52,7 +51,6 @@ namespace SoftNETProject
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SoftNETProject v1"));
             }
 
-            app.uselo
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
